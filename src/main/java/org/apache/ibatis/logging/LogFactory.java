@@ -33,7 +33,7 @@ public final class LogFactory {
   private static Constructor<? extends Log> logConstructor;
 
   static {
-    tryImplementation(LogFactory::useSlf4jLogging);
+    tryImplementation(LogFactory::useSlf4jLogging); // 默认是sl4j的实现
     tryImplementation(LogFactory::useCommonsLogging);
     tryImplementation(LogFactory::useLog4J2Logging);
     tryImplementation(LogFactory::useLog4JLogging);
