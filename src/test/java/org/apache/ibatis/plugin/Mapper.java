@@ -17,9 +17,18 @@ package org.apache.ibatis.plugin;
 
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 public interface Mapper {
 
-  @Select("select name from users where id = #{id}")
+  @Select("select name from user where id = #{id}")
   String selectNameById(Integer id);
+
+  List<String> selectNameAndIds(List<Long> ids, String name);
+
+  void updateSpecUsers(List<Long> ids, String name);
+
+  @Select("select name from user")
+  String selectAll();
 
 }

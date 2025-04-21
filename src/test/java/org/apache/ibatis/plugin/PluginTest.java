@@ -26,6 +26,7 @@ import java.util.Map;
 import org.apache.ibatis.BaseDataTest;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -36,13 +37,20 @@ class PluginTest {
 
   private static SqlSessionFactory sqlSessionFactory;
 
+  private static SqlSessionFactory sqlSessionFactoryRealDB;
+
   @BeforeAll
   static void setUp() throws Exception {
     try (Reader reader = Resources.getResourceAsReader("org/apache/ibatis/plugin/mybatis-config.xml")) {
       sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
     }
-    BaseDataTest.runScript(sqlSessionFactory.getConfiguration().getEnvironment().getDataSource(),
-        "org/apache/ibatis/plugin/CreateDB.sql");
+
+//    BaseDataTest.runScript(sqlSessionFactory.getConfiguration().getEnvironment().getDataSource(),
+//        "org/apache/ibatis/plugin/CreateDB.sql");
+
+    try (Reader reader = Resources.getResourceAsReader("org/apache/ibatis/plugin/mybatis-config-real-db.xml")) {
+      sqlSessionFactoryRealDB = new SqlSessionFactoryBuilder().build(reader);
+    }
   }
 
   @Test
@@ -59,6 +67,18 @@ class PluginTest {
       assertEquals("Private user 1", mapper.selectNameById(1));
     }
   }
+
+  @Test
+  void testParamSetPrettySQLPrinterTest() {
+    try (SqlSession sqlSession = sqlSessionFactoryRealDB.openSession()) {
+      Mapper mapper = sqlSession.getMapper(Mapper.class);
+      Configuration configuration = sqlSession.getConfiguration();
+      configuration.addInterceptor(new ParameterizedSqlLoggingInterceptor(configuration));
+      String s = mapper.selectNameById(1);
+      System.out.println(s);
+    }
+  }
+
 
   static final class SchemaHolder {
     private static ThreadLocal<String> value = ThreadLocal.withInitial(() -> "PUBLIC");
