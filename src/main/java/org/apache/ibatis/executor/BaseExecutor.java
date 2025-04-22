@@ -151,6 +151,7 @@ public abstract class BaseExecutor implements Executor {
     }
     List<E> list;
     try {
+      // 一级缓存 实现，无法关闭
       queryStack++;
       list = resultHandler == null ? (List<E>) localCache.getObject(key) : null;
       if (list != null) {
