@@ -43,6 +43,7 @@ import org.apache.ibatis.session.SqlSession;
  * @author Eduardo Macarron
  * @author Lasse Voss
  * @author Kazuki Shimizu
+ * 此处所是命令模式的一个触发类
  */
 public class MapperMethod {
 

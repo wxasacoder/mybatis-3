@@ -201,10 +201,10 @@ public abstract class BaseExecutor implements Executor {
       throw new ExecutorException("Executor was closed.");
     }
     CacheKey cacheKey = new CacheKey();
-    cacheKey.update(ms.getId());
+    cacheKey.update(ms.getId()); // methodId  exp: org.apache.ibatis.plugin.Mapper.selectNameById
     cacheKey.update(rowBounds.getOffset());
     cacheKey.update(rowBounds.getLimit());
-    cacheKey.update(boundSql.getSql());
+    cacheKey.update(boundSql.getSql()); // sql
     List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
     TypeHandlerRegistry typeHandlerRegistry = ms.getConfiguration().getTypeHandlerRegistry();
     // mimic DefaultParameterHandler logic
@@ -232,7 +232,7 @@ public abstract class BaseExecutor implements Executor {
             value = metaObject.getValue(propertyName);
           }
         }
-        cacheKey.update(value);
+        cacheKey.update(value); // 所有的参数值
       }
     }
     if (configuration.getEnvironment() != null) {

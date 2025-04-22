@@ -38,6 +38,8 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
  * @author Iwao AVE!
+ * 将 resultSet 中的字段元信息，及其本身封装进入其中
+ * 并将resultSet映射的字段的java类型也保存下来
  */
 public class ResultSetWrapper {
 

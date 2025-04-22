@@ -721,6 +721,16 @@ public class Configuration {
     return (ResultSetHandler) interceptorChain.pluginAll(resultSetHandler);
   }
 
+  /**
+   * 通过 configuration 接口获取statementHandler 此处开启增加的模式
+   * @param executor
+   * @param mappedStatement
+   * @param parameterObject
+   * @param rowBounds
+   * @param resultHandler
+   * @param boundSql
+   * @return
+   */
   public StatementHandler newStatementHandler(Executor executor, MappedStatement mappedStatement,
       Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
     StatementHandler statementHandler = new RoutingStatementHandler(executor, mappedStatement, parameterObject,
@@ -742,7 +752,7 @@ public class Configuration {
     } else {
       executor = new SimpleExecutor(this, transaction);
     }
-    if (cacheEnabled) {
+    if (cacheEnabled) { // 装饰 执行器
       executor = new CachingExecutor(executor);
     }
     return (Executor) interceptorChain.pluginAll(executor);
