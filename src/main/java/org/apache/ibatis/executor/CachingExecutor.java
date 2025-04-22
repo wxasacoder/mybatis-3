@@ -35,6 +35,7 @@ import org.apache.ibatis.transaction.Transaction;
 /**
  * @author Clinton Begin
  * @author Eduardo Macarron
+ * 二级缓存也就是跨session级别的缓存也是通过此处实现的
  */
 public class CachingExecutor implements Executor {
 

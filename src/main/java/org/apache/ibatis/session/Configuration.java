@@ -742,6 +742,7 @@ public class Configuration {
     return newExecutor(transaction, defaultExecutorType);
   }
 
+  // 二级缓存 （SqlSessionFactory级别的 是跨 SqlSession 级别）
   public Executor newExecutor(Transaction transaction, ExecutorType executorType) {
     executorType = executorType == null ? defaultExecutorType : executorType;
     Executor executor;
