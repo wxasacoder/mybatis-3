@@ -15,14 +15,7 @@
  */
 package org.apache.ibatis.reflection;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
+import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -53,8 +46,8 @@ public class TypeParameterResolver {
    *         they will be resolved to the actual runtime {@link Type}s.
    */
   public static Type resolveFieldType(Field field, Type srcType) {
-    Type fieldType = field.getGenericType();
-    Class<?> declaringClass = field.getDeclaringClass();
+    Type fieldType = field.getGenericType(); // 获取field本身的通用类型，也就是Type
+    Class<?> declaringClass = field.getDeclaringClass(); // field所属类的类型
     return resolveType(fieldType, srcType, declaringClass);
   }
 
@@ -63,7 +56,7 @@ public class TypeParameterResolver {
    *
    * @param method
    *          the method
-   * @param srcType
+   * @param srcType 出发class
    *          the src type
    *
    * @return The return type of the method as {@link Type}. If it has type parameters in the declaration,<br>
@@ -71,7 +64,7 @@ public class TypeParameterResolver {
    */
   public static Type resolveReturnType(Method method, Type srcType) {
     Type returnType = method.getGenericReturnType();
-    Class<?> declaringClass = method.getDeclaringClass();
+    Class<?> declaringClass = method.getDeclaringClass(); //  归属class
     return resolveType(returnType, srcType, declaringClass);
   }
 
@@ -102,13 +95,13 @@ public class TypeParameterResolver {
   }
 
   private static Type resolveType(Type type, Type srcType, Class<?> declaringClass) {
-    if (type instanceof TypeVariable) {
+    if (type instanceof TypeVariable) { //  泛型参数 T
       return resolveTypeVar((TypeVariable<?>) type, srcType, declaringClass);
-    } else if (type instanceof ParameterizedType) {
+    } else if (type instanceof ParameterizedType) { // 参数类型 A<T>
       return resolveParameterizedType((ParameterizedType) type, srcType, declaringClass);
-    } else if (type instanceof GenericArrayType) {
+    } else if (type instanceof GenericArrayType) { // T[]
       return resolveGenericArrayType((GenericArrayType) type, srcType, declaringClass);
-    } else if (type instanceof WildcardType) {
+    } else if (type instanceof WildcardType) { // ?
       return resolveWildcardType((WildcardType) type, srcType, declaringClass);
     } else {
       return type;
@@ -128,8 +121,8 @@ public class TypeParameterResolver {
 
   private static ParameterizedType resolveParameterizedType(ParameterizedType parameterizedType, Type srcType,
       Class<?> declaringClass) {
-    Class<?> rawType = (Class<?>) parameterizedType.getRawType();
-    Type[] typeArgs = parameterizedType.getActualTypeArguments();
+    Class<?> rawType = (Class<?>) parameterizedType.getRawType(); // 获取 泛型的载体类型例如 List<T> 此获取是 List的类型
+    Type[] typeArgs = parameterizedType.getActualTypeArguments(); // 获取则是List<T>中的t
     Type[] args = resolveTypes(typeArgs, srcType, declaringClass);
     return new ParameterizedTypeImpl(rawType, null, args);
   }
@@ -144,7 +137,7 @@ public class TypeParameterResolver {
     Type result;
     Class<?> clazz;
     if (srcType instanceof Class) {
-      clazz = (Class<?>) srcType;
+      clazz = (Class<?>) srcType; // type是普通的class则直接返回
     } else if (srcType instanceof ParameterizedType) {
       ParameterizedType parameterizedType = (ParameterizedType) srcType;
       clazz = (Class<?>) parameterizedType.getRawType();
@@ -160,9 +153,9 @@ public class TypeParameterResolver {
       throw new IllegalArgumentException(
           "The 2nd arg must be Class or ParameterizedType, but was: " + srcType.getClass());
     }
-
+    // 如果 filed所归属的类是 和 srcType是一样则直接获取上界
     if (clazz == declaringClass) {
-      Type[] bounds = typeVar.getBounds();
+      Type[] bounds = typeVar.getBounds(); // 获取上界
       if (bounds.length > 0) {
         return bounds[0];
       }
