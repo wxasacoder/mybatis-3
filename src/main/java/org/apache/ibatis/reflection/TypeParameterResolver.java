@@ -178,6 +178,16 @@ public class TypeParameterResolver {
     return Object.class;
   }
 
+  /**
+   * 此处搜索超类的逻辑是，如果放前拿到 typeVar 他所属的类有super类，那么则查找super类的 typeVars
+   * 随后进行循环 匹配，如果发现是当前 typeVar 则 获取到前的 actualType 返回。
+   * @param typeVar
+   * @param srcType
+   * @param declaringClass
+   * @param clazz
+   * @param superclass
+   * @return
+   */
   private static Type scanSuperTypes(TypeVariable<?> typeVar, Type srcType, Class<?> declaringClass, Class<?> clazz,
       Type superclass) {
     if (superclass instanceof ParameterizedType) {
