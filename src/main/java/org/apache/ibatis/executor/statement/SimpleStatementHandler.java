@@ -33,7 +33,7 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
 /**
- * @author Clinton Begin
+ * @author Clinton Begin 无需人的参数设置，直接进行预编译的方式进行执行
  */
 public class SimpleStatementHandler extends BaseStatementHandler {
 

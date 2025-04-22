@@ -30,8 +30,27 @@ import org.apache.ibatis.session.ResultHandler;
  */
 public interface StatementHandler {
 
+  /**
+   * 准备 JDBC 的 statement 并为之设置必要的参数 超时时间， fetchSize等
+   *
+   * @param connection
+   *          连接
+   * @param transactionTimeout
+   *          事物超时时间
+   *
+   * @return
+   *
+   * @throws SQLException
+   */
   Statement prepare(Connection connection, Integer transactionTimeout) throws SQLException;
 
+  /**
+   * 如果有 TypeHandler 则调用 TypeHandler 设置相应的参数至 statement 中 为 statement 设置参数
+   *
+   * @param statement
+   *
+   * @throws SQLException
+   */
   void parameterize(Statement statement) throws SQLException;
 
   void batch(Statement statement) throws SQLException;
